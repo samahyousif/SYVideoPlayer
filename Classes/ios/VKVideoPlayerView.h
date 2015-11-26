@@ -120,4 +120,7 @@
 - (void)addSubviewForControl:(UIView *)view toView:(UIView*)parentView;
 - (void)addSubviewForControl:(UIView *)view toView:(UIView*)parentView forOrientation:(UIInterfaceOrientationMask)orientation;
 - (void)removeControlView:(UIView*)view;
+
+- (void)changePlayToRewind;
+- (void)changeRewindToPlay;
 @end

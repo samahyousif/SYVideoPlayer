@@ -300,7 +300,11 @@ typedef enum {
 }
 
 - (void)scrubbingEndAtSecond:(float)sec userAction:(BOOL)isUserAction completionHandler:(void (^)(BOOL finished))completionHandler {
+    if ([self.delegate respondsToSelector:@selector(videoPlayer:didSeekToTime:)]) {
+        [self.delegate videoPlayer:self didSeekToTime:sec];
+    }
   [self.player seekToTimeInSeconds:sec completionHandler:completionHandler];
+    
 }
 
 

@@ -155,7 +155,8 @@
 }
 
 - (IBAction)rewindButtonPressed:(id)sender {
-  [self.delegate rewindButtonPressed];
+    [self.delegate rewindButtonPressed];
+    [self changeRewindToPlay];
 }
 
 - (IBAction)fullscreenButtonTapped:(id)sender {
@@ -437,6 +438,47 @@
   [self.customControls removeObject:view];
   [self.landscapeControls removeObject:view];
   [self.portraitControls removeObject:view];
+}
+
+- (void)changePlayToRewind{
+    BOOL bigButtonCouldReplace = [self button:self.bigPlayButton RespondsToSelector:@selector(playButtonTapped:)];
+    BOOL playButtonCouldReplace = [self button:self.playButton RespondsToSelector:@selector(playButtonTapped:)];
+    if (playButtonCouldReplace) {
+        [self.playButton setImage:[UIImage imageNamed:@"VKVideoPlayer_rewind"] forState:UIControlStateSelected];
+        [self.playButton removeTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [self.playButton addTarget:self action:@selector(rewindButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+
+    if (bigButtonCouldReplace) {
+        [self.bigPlayButton setImage:[UIImage imageNamed:@"VKVideoPlayer_rewind"] forState:UIControlStateSelected];
+        [self.bigPlayButton removeTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [self.bigPlayButton addTarget:self action:@selector(rewindButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    }
+
+}
+
+- (BOOL)button:(UIButton*)button RespondsToSelector:(SEL)selector{
+    NSArray *buttonaActionsArr = [button actionsForTarget:self forControlEvent:UIControlEventTouchUpInside];
+    BOOL buttonRespondsToSelector = [buttonaActionsArr[0] isEqualToString:NSStringFromSelector(selector)];
+    return buttonRespondsToSelector;
+}
+- (void)changeRewindToPlay{
+    BOOL bigButtonCouldReplace = [self button:self.bigPlayButton RespondsToSelector:@selector(rewindButtonPressed:)];
+    BOOL playButtonCouldReplace = [self button:self.playButton RespondsToSelector:@selector(rewindButtonPressed:)];
+    if (bigButtonCouldReplace) {
+          self.bigPlayButton.hidden = YES;
+        [self.bigPlayButton setImage:[UIImage imageNamed:@"VKVideoPlayer_play_big"] forState:UIControlStateSelected];
+        [self.bigPlayButton removeTarget:self action:@selector(rewindButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.bigPlayButton addTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    if (playButtonCouldReplace) {
+        [self.playButton setImage:[UIImage imageNamed:@"VKVideoPlayer_play"] forState:UIControlStateSelected];
+        [self.playButton removeTarget:self action:@selector(rewindButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        [self.playButton addTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    }
+
 }
 
 @end

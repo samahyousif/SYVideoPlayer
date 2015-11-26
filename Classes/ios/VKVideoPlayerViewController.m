@@ -10,7 +10,6 @@
 #import "VKVideoPlayerAirPlay.h"
 #import "VKVideoPlayerSettingsManager.h"
 
-
 @interface VKVideoPlayerViewController () {
 }
 
@@ -19,107 +18,144 @@
 
 @implementation VKVideoPlayerViewController
 
-- (id)init {
-  self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil];
-  if (self) {
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self initialize];
-  }
-  return self;
+- (id)init
+{
+    self = [super initWithNibName:NSStringFromClass([self class]) bundle:nil];
+    if (self) {
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        [self initialize];
+    }
+    return self;
 }
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-  self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-  if (self) {
-    self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self initialize];
-  }
-  return self;
+- (id)initWithNibName:(NSString*)nibNameOrNil bundle:(NSBundle*)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+        [self initialize];
+    }
+    return self;
 }
 
-- (void)initialize {
-  [VKSharedAirplay setup];
+- (void)initialize
+{
+    [VKSharedAirplay setup];
 }
-- (void)dealloc {
-  [VKSharedAirplay deactivate];
-}
-
-- (void)viewDidUnload {
-  [super viewDidUnload];
+- (void)dealloc
+{
+    [VKSharedAirplay deactivate];
 }
 
-- (void)viewDidLoad {
-  [super viewDidLoad];
-  
-  self.player = [[VKVideoPlayer alloc] init];
-  self.player.delegate = self;
-  self.player.view.frame = self.view.bounds;
-  self.player.forceRotate = YES;
-  [self.view addSubview:self.player.view];
-  
-  if (VKSharedAirplay.isConnected) {
-    [VKSharedAirplay activate:self.player];
-  }
+- (void)viewDidUnload
+{
+    [super viewDidUnload];
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-  self.applicationIdleTimerDisabled = [UIApplication sharedApplication].isIdleTimerDisabled;
-  [UIApplication sharedApplication].idleTimerDisabled = YES;
-  [[UIApplication sharedApplication] setStatusBarHidden:NO];
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+
+    self.player = [[VKVideoPlayer alloc] init];
+    self.player.delegate = self;
+    self.player.view.frame = self.view.bounds;
+    self.player.view.rewindButton.hidden = YES;
+    self.player.view.nextButton.hidden = YES;
+    self.player.view.videoQualityButton.hidden = YES;
+
+    self.player.forceRotate = YES;
+    [self.view addSubview:self.player.view];
+
+    if (VKSharedAirplay.isConnected) {
+        [VKSharedAirplay activate:self.player];
+    }
 }
 
-- (void)viewDidAppear:(BOOL)animated {
-  [super viewDidAppear:animated];
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    self.applicationIdleTimerDisabled = [UIApplication sharedApplication].isIdleTimerDisabled;
+    [UIApplication sharedApplication].idleTimerDisabled = YES;
+    [[UIApplication sharedApplication] setStatusBarHidden:NO];
 }
 
-- (void)viewWillDisappear:(BOOL)animated {
-  [UIApplication sharedApplication].idleTimerDisabled = self.applicationIdleTimerDisabled;
-  [super viewWillDisappear:animated];
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
 }
 
-- (BOOL)prefersStatusBarHidden {
-  return NO;
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [UIApplication sharedApplication].idleTimerDisabled = self.applicationIdleTimerDisabled;
+    [super viewWillDisappear:animated];
 }
 
-- (void)playVideoWithStreamURL:(NSURL*)streamURL {
-  [self.player loadVideoWithTrack:[[VKVideoPlayerTrack alloc] initWithStreamURL:streamURL]];
+- (BOOL)prefersStatusBarHidden
+{
+    return NO;
 }
 
-- (void)setSubtitle:(VKVideoPlayerCaption*)subtitle {
-  [self.player setCaptionToBottom:subtitle];
+- (void)playVideoWithStreamURL:(NSURL*)streamURL
+{
+    [self.player loadVideoWithTrack:[[VKVideoPlayerTrack alloc] initWithStreamURL:streamURL]];
+}
+
+- (void)setSubtitle:(VKVideoPlayerCaption*)subtitle
+{
+    [self.player setCaptionToBottom:subtitle];
 }
 
 #pragma mark - App States
 
-- (void)applicationWillResignActive {
-  self.player.view.controlHideCountdown = -1;
-  if (self.player.state == VKVideoPlayerStateContentPlaying) [self.player pauseContent:NO completionHandler:nil];
+- (void)applicationWillResignActive
+{
+    self.player.view.controlHideCountdown = -1;
+    if (self.player.state == VKVideoPlayerStateContentPlaying)
+        [self.player pauseContent:NO completionHandler:nil];
 }
 
-- (void)applicationDidBecomeActive {
-  self.player.view.controlHideCountdown = kPlayerControlsDisableAutoHide;
+- (void)applicationDidBecomeActive
+{
+    self.player.view.controlHideCountdown = kPlayerControlsDisableAutoHide;
 }
 
 #pragma mark - VKVideoPlayerControllerDelegate
-- (void)videoPlayer:(VKVideoPlayer*)videoPlayer didControlByEvent:(VKVideoPlayerControlEvent)event {
-  if (event == VKVideoPlayerControlEventTapDone) {
-    [self dismissViewControllerAnimated:YES completion:nil];
-  }
+- (void)videoPlayer:(VKVideoPlayer*)videoPlayer didControlByEvent:(VKVideoPlayerControlEvent)event
+{
+    if (event == VKVideoPlayerControlEventTapDone) {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
+- (void)videoPlayer:(VKVideoPlayer*)videoPlayer didPlayToEnd:(id<VKVideoPlayerTrackProtocol>)track
+{
+   // NSLog(@"HHHHHH %@",(VKVideoPlayer*)videoPlayer.playerItem.duration);
+    [self.player.view changePlayToRewind];
+}
+
+- (void)videoPlayer:(VKVideoPlayer*)videoPlayer didSeekToTime:(float)sec{
+    NSNumber *totalVideoDuration = videoPlayer.track.totalVideoDuration;
+    if (sec == [totalVideoDuration floatValue]) {
+        [self.player.view changePlayToRewind];
+    } else {
+        [self.player.view changeRewindToPlay];
+    }
+    NSLog(@"HHHHh");
+}
 #pragma mark - Orientation
-- (BOOL)shouldAutorotate {
-  return NO;
+- (BOOL)shouldAutorotate
+{
+    return NO;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-  if (self.player.isFullScreen) {
-    return UIInterfaceOrientationIsLandscape(interfaceOrientation);
-  } else {
-    return NO;
-  }
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    if (self.player.isFullScreen) {
+        return UIInterfaceOrientationIsLandscape(interfaceOrientation);
+    }
+    else {
+        return NO;
+    }
 }
 
 @end
