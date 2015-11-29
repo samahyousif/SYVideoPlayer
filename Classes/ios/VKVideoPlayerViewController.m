@@ -92,7 +92,7 @@
 
 - (BOOL)prefersStatusBarHidden
 {
-    return NO;
+    return YES;
 }
 
 - (void)playVideoWithStreamURL:(NSURL*)streamURL
@@ -129,7 +129,6 @@
 
 - (void)videoPlayer:(VKVideoPlayer*)videoPlayer didPlayToEnd:(id<VKVideoPlayerTrackProtocol>)track
 {
-   // NSLog(@"HHHHHH %@",(VKVideoPlayer*)videoPlayer.playerItem.duration);
     [self.player.view changePlayToRewind];
 }
 
@@ -140,7 +139,6 @@
     } else {
         [self.player.view changeRewindToPlay];
     }
-    NSLog(@"HHHHh");
 }
 #pragma mark - Orientation
 //- (BOOL)shouldAutorotate
