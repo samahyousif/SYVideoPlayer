@@ -143,10 +143,10 @@
     NSLog(@"HHHHh");
 }
 #pragma mark - Orientation
-- (BOOL)shouldAutorotate
-{
-    return NO;
-}
+//- (BOOL)shouldAutorotate
+//{
+//    return NO;
+//}
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -154,7 +154,7 @@
         return UIInterfaceOrientationIsLandscape(interfaceOrientation);
     }
     else {
-        return NO;
+        return UIInterfaceOrientationIsPortrait(interfaceOrientation);
     }
 }
 
