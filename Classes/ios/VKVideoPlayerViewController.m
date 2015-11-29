@@ -154,6 +154,7 @@
     else {
         return UIInterfaceOrientationIsPortrait(interfaceOrientation);
     }
+    self.player.view.videoQualityButton.hidden = YES;
 }
 
 @end
