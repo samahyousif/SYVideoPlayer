@@ -451,7 +451,7 @@
     
 
     if (bigButtonCouldReplace) {
-        [self.bigPlayButton setImage:[UIImage imageNamed:@"VKVideoPlayer_rewind"] forState:UIControlStateSelected];
+        [self.bigPlayButton setImage:[UIImage imageNamed:@"VKVideoPlayer_rewind_big"] forState:UIControlStateSelected];
         [self.bigPlayButton removeTarget:self action:@selector(playButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
         [self.bigPlayButton addTarget:self action:@selector(rewindButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
     }
